@@ -33,9 +33,9 @@ function Index() {
                 <span>AI-powered · Built for India 🇮🇳</span>
               </div>
               <h1 className="mt-6 font-display text-4xl font-bold text-white text-balance sm:text-5xl lg:text-6xl">
-                Master Indian elections.
+                Get the basics of Indian elections in 5 minutes,
                 <span className="block bg-gradient-to-r from-saffron to-white bg-clip-text text-transparent">
-                  In 5 lovable minutes.
+                  no stress.
                 </span>
               </h1>
               <p className="mt-5 max-w-xl text-base text-white/80 sm:text-lg">

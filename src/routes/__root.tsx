@@ -23,10 +23,10 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "ElectionGuide Bot — Master Indian Elections in Minutes" },
+      { title: "ElectionGuide Bot — Get the basics of Indian elections in 5 minutes, no stress" },
       { name: "description", content: "Interactive AI assistant explaining Indian election processes, timelines, eligibility, and more — chat, timeline, and quiz in one place." },
       { name: "author", content: "ElectionGuide" },
-      { property: "og:title", content: "ElectionGuide Bot — Master Indian Elections" },
+      { property: "og:title", content: "ElectionGuide Bot — Get the basics of Indian elections in 5 minutes, no stress" },
       { property: "og:description", content: "Chat, timeline, eligibility checker, and quiz — your friendly guide to ECI election processes." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

@@ -61,7 +61,7 @@ function ChatPage() {
 
       if (!resp.ok || !resp.body) {
         if (resp.status === 429) throw new Error("Too many messages — please wait a moment.");
-        if (resp.status === 402) throw new Error("AI credits exhausted. Add funds in Lovable Cloud.");
+        if (resp.status === 402) throw new Error("AI credits exhausted. Add funds in  Cloud.");
         throw new Error("Failed to start chat. Try again.");
       }
 
