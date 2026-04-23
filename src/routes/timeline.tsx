@@ -39,7 +39,7 @@ function TimelinePage() {
         <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_1.2fr]">
           {/* Vertical timeline */}
           <div className="relative">
-            <div className="absolute left-5 top-2 bottom-2 w-px bg-gradient-to-b from-saffron via-primary to-india-green" />
+            <div className="absolute left-5 top-2 bottom-2 w-px bg-gradient-to-b from-primary via-muted to-accent" />
             <ol className="space-y-2">
               {PHASES.map((p) => {
                 const isActive = p.id === active;

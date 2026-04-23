@@ -3,6 +3,7 @@ import { MessageCircle, CalendarClock, ShieldCheck, Sparkles, ArrowRight, Vote }
 import heroImage from "@/assets/hero-democracy.jpg";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import DotField from "@/components/DotField";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -22,11 +23,27 @@ function Index() {
       <Header />
       <main>
         <section className="relative overflow-hidden">
+          <div className="absolute inset-0 z-0">
+            <DotField
+              dotRadius={1.5}
+              dotSpacing={14}
+              bulgeStrength={67}
+              glowRadius={160}
+              sparkle={false}
+              waveAmplitude={0}
+              cursorRadius={500}
+              cursorForce={0.1}
+              bulgeOnly
+              gradientFrom="rgba(0, 0, 0, 0.35)"
+              gradientTo="rgba(0, 0, 0, 0.25)"
+              glowColor="#000000"
+            />
+          </div>
           <div className="absolute inset-0 bg-gradient-hero opacity-95" />
           <div className="absolute inset-0 opacity-30 mix-blend-overlay">
             <img src={heroImage} alt="" width={1536} height={1024} className="h-full w-full object-cover" />
           </div>
-          <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:py-36">
+          <div className="relative z-10 mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:py-36">
             <div className="max-w-2xl animate-fade-up">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-medium text-white backdrop-blur">
                 <Sparkles className="h-3.5 w-3.5" />
@@ -34,7 +51,7 @@ function Index() {
               </div>
               <h1 className="mt-6 font-display text-4xl font-bold text-white text-balance sm:text-5xl lg:text-6xl">
                 Get the basics of Indian elections in 5 minutes,
-                <span className="block bg-gradient-to-r from-saffron to-white bg-clip-text text-transparent">
+                <span className="block bg-gradient-to-r from-primary to-foreground bg-clip-text text-transparent">
                   no stress.
                 </span>
               </h1>
