@@ -1,5 +1,6 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import appCss from "../styles.css?url";
+import FloatingRobot from "@/components/FloatingRobot";
 
 function NotFoundComponent() {
   return (
@@ -44,6 +45,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
       <head><HeadContent /></head>
       <body>
         {children}
+        <FloatingRobot />
         <Scripts />
       </body>
     </html>
