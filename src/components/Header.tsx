@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { Vote } from "lucide-react";
+import { Vote, Languages, LogIn } from "lucide-react";
+import { useEffect } from "react";
+import { googleServices } from "@/lib/google-services";
 
 export function Header() {
   return (
@@ -11,28 +13,46 @@ export function Header() {
           </div>
           <div className="leading-tight">
             <div className="font-display text-base font-bold text-foreground">ElectionGuide</div>
-            <div className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Bot · India</div>
+            <div className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+              Bot · India
+            </div>
           </div>
         </Link>
-        <nav className="flex items-center gap-1 text-sm font-medium">
-          {[
-            { to: "/", label: "Home" },
-            { to: "/chat", label: "Chat" },
-            { to: "/timeline", label: "Timeline" },
-            { to: "/eligibility", label: "Eligibility" },
-            { to: "/quiz", label: "Quiz" },
-          ].map((l) => (
-            <Link
-              key={l.to}
-              to={l.to}
-              className="rounded-lg px-2.5 py-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground sm:px-3"
-              activeProps={{ className: "rounded-lg px-2.5 py-1.5 sm:px-3 bg-secondary text-foreground" }}
-              activeOptions={{ exact: l.to === "/" }}
-            >
-              {l.label}
-            </Link>
-          ))}
-        </nav>
+        <div className="flex items-center gap-4">
+          <div id="google_translate_element" className="hidden sm:block"></div>
+          <nav className="flex items-center gap-1 text-sm font-medium">
+            {[
+              { to: "/", label: "Home" },
+              { to: "/chat", label: "Chat" },
+              { to: "/timeline", label: "Timeline" },
+              { to: "/eligibility", label: "Eligibility" },
+              { to: "/quiz", label: "Quiz" },
+            ].map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                className="rounded-lg px-2.5 py-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground sm:px-3"
+                activeProps={{
+                  className: "rounded-lg px-2.5 py-1.5 sm:px-3 bg-secondary text-foreground",
+                }}
+                activeOptions={{ exact: l.to === "/" }}
+              >
+                {l.label}
+              </Link>
+            ))}
+          </nav>
+          <button
+            id="google-signin-btn"
+            className="ml-2 inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:bg-primary/90"
+            onClick={() => {
+              // This will be handled by GSI if keys are provided
+              // For now it shows the premium intent
+            }}
+          >
+            <LogIn className="h-4 w-4" />
+            <span className="hidden md:inline">Sign In</span>
+          </button>
+        </div>
       </div>
     </header>
   );

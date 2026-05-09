@@ -2,16 +2,25 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { PHASES } from "@/data/election-data";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { googleAnalytics, googleCalendar } from "@/lib/google-services";
+import { Calendar } from "lucide-react";
 
 export const Route = createFileRoute("/timeline")({
   component: TimelinePage,
   head: () => ({
     meta: [
       { title: "12 Phases — ElectionGuide Bot" },
-      { name: "description", content: "Visual timeline of the 12 phases of an Indian election: announcement, nominations, campaigning, polling, counting and government formation." },
+      {
+        name: "description",
+        content:
+          "Visual timeline of the 12 phases of an Indian election: announcement, nominations, campaigning, polling, counting and government formation.",
+      },
       { property: "og:title", content: "The 12 Phases of an Indian Election" },
-      { property: "og:description", content: "Visual journey from ECI announcement to the swearing-in ceremony." },
+      {
+        property: "og:description",
+        content: "Visual journey from ECI announcement to the swearing-in ceremony.",
+      },
     ],
   }),
 });
@@ -19,6 +28,10 @@ export const Route = createFileRoute("/timeline")({
 function TimelinePage() {
   const [active, setActive] = useState<number>(1);
   const phase = PHASES.find((p) => p.id === active)!;
+
+  useEffect(() => {
+    googleAnalytics.trackTimelineInteraction(phase.title, "view_phase");
+  }, [active, phase.title]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -51,14 +64,22 @@ function TimelinePage() {
                         isActive ? "bg-card shadow-soft" : "hover:bg-secondary/60"
                       }`}
                     >
-                      <span className={`relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-lg transition-all ${
-                        isActive ? "bg-gradient-hero text-primary-foreground shadow-glow scale-110" : "bg-card text-foreground border border-border"
-                      }`}>
+                      <span
+                        className={`relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-lg transition-all ${
+                          isActive
+                            ? "bg-gradient-hero text-primary-foreground shadow-glow scale-110"
+                            : "bg-card text-foreground border border-border"
+                        }`}
+                      >
                         {p.icon}
                       </span>
                       <div className="min-w-0 flex-1">
-                        <div className={`text-sm font-semibold ${isActive ? "text-primary" : "text-foreground"}`}>
-                          <span className="text-muted-foreground mr-1.5">{String(p.id).padStart(2, "0")}</span>
+                        <div
+                          className={`text-sm font-semibold ${isActive ? "text-primary" : "text-foreground"}`}
+                        >
+                          <span className="text-muted-foreground mr-1.5">
+                            {String(p.id).padStart(2, "0")}
+                          </span>
                           {p.title}
                         </div>
                         <div className="text-xs text-muted-foreground">{p.duration}</div>
@@ -72,24 +93,49 @@ function TimelinePage() {
 
           {/* Detail panel */}
           <aside className="lg:sticky lg:top-24 lg:h-fit">
-            <div key={phase.id} className="animate-fade-up overflow-hidden rounded-2xl border border-border bg-gradient-card shadow-elegant">
+            <div
+              key={phase.id}
+              className="animate-fade-up overflow-hidden rounded-2xl border border-border bg-gradient-card shadow-elegant"
+            >
               <div className="bg-gradient-hero p-6 text-primary-foreground">
                 <div className="flex items-center gap-3">
                   <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white/15 text-3xl backdrop-blur">
                     {phase.icon}
                   </div>
                   <div>
-                    <div className="text-xs font-medium uppercase tracking-wider text-white/70">Phase {phase.id} of 12</div>
+                    <div className="text-xs font-medium uppercase tracking-wider text-white/70">
+                      Phase {phase.id} of 12
+                    </div>
                     <h2 className="mt-0.5 font-display text-2xl font-bold">{phase.title}</h2>
                   </div>
                 </div>
               </div>
               <div className="space-y-4 p-6">
                 <div className="flex items-center gap-2 text-xs">
-                  <span className="rounded-full bg-saffron/15 px-2.5 py-1 font-semibold text-saffron">{phase.duration}</span>
+                  <span className="rounded-full bg-saffron/15 px-2.5 py-1 font-semibold text-saffron">
+                    {phase.duration}
+                  </span>
                   <span className="text-muted-foreground">{phase.short}</span>
                 </div>
                 <p className="text-sm leading-relaxed text-foreground/85">{phase.details}</p>
+
+                <button
+                  onClick={() => {
+                    const url = googleCalendar.generateCalendarUrl({
+                      title: `Election Phase: ${phase.title}`,
+                      details: phase.details,
+                      startDate: "20240520T090000Z", // Example date
+                      endDate: "20240520T180000Z",
+                    });
+                    window.open(url, "_blank");
+                    googleAnalytics.trackEvent("add_to_calendar", { phase: phase.title });
+                  }}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary/10 py-2.5 text-sm font-semibold text-primary transition-all hover:bg-primary/20"
+                >
+                  <Calendar className="h-4 w-4" />
+                  Add to Google Calendar
+                </button>
+
                 <div className="flex gap-2 pt-2">
                   <button
                     onClick={() => setActive(Math.max(1, active - 1))}

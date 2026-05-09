@@ -7,12 +7,22 @@ export function Footer() {
             <p className="text-sm font-semibold text-foreground">ElectionGuide Bot</p>
             <p className="mt-1 text-xs text-muted-foreground">
               Educational content. Always verify dates with the{" "}
-              <a href="https://eci.gov.in" target="_blank" rel="noreferrer" className="font-medium text-primary underline-offset-2 hover:underline">
+              <a
+                href="https://eci.gov.in"
+                target="_blank"
+                rel="noreferrer"
+                className="font-medium text-primary underline-offset-2 hover:underline"
+              >
                 Election Commission of India
-              </a>.
+              </a>
+              .
             </p>
           </div>
-          <div className="flex h-2 w-32 overflow-hidden rounded-full">
+          <div
+            role="img"
+            aria-label="Colors of the Indian National Flag"
+            className="flex h-2 w-32 overflow-hidden rounded-full"
+          >
             <div className="flex-1 bg-saffron" />
             <div className="flex-1 bg-background" />
             <div className="flex-1 bg-india-green" />

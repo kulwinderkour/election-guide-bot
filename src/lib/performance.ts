@@ -3,7 +3,7 @@
  * Implements efficient resource usage and performance monitoring
  */
 
-import { debounce, throttle } from './utils';
+import { debounce, throttle } from "./utils";
 
 /**
  * Performance monitoring utilities
@@ -15,23 +15,28 @@ export class PerformanceMonitor {
   static startMonitoring(): void {
     // Monitor navigation timing
     this.observeNavigationTiming();
-    
+
     // Monitor resource loading
     this.observeResourceTiming();
-    
+
     // Monitor long tasks
     this.observeLongTasks();
-    
+
     // Monitor memory usage
     this.observeMemoryUsage();
   }
 
   private static observeNavigationTiming(): void {
-    if ('performance' in window && 'getEntriesByType' in performance) {
-      const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-      this.recordMetric('domContentLoaded', navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart);
-      this.recordMetric('loadComplete', navigation.loadEventEnd - navigation.loadEventStart);
-      this.recordMetric('firstPaint', navigation.responseEnd - navigation.requestStart);
+    if ("performance" in window && "getEntriesByType" in performance) {
+      const navigation = performance.getEntriesByType(
+        "navigation",
+      )[0] as PerformanceNavigationTiming;
+      this.recordMetric(
+        "domContentLoaded",
+        navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart,
+      );
+      this.recordMetric("loadComplete", navigation.loadEventEnd - navigation.loadEventStart);
+      this.recordMetric("firstPaint", navigation.responseEnd - navigation.requestStart);
     }
   }
 
@@ -39,16 +44,16 @@ export class PerformanceMonitor {
     try {
       const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
-          if (entry.entryType === 'resource') {
+          if (entry.entryType === "resource") {
             const resource = entry as PerformanceResourceTiming;
-            this.recordMetric('resourceLoadTime', resource.responseEnd - resource.requestStart);
+            this.recordMetric("resourceLoadTime", resource.responseEnd - resource.requestStart);
           }
         }
       });
-      observer.observe({ entryTypes: ['resource'] });
+      observer.observe({ entryTypes: ["resource"] });
       this.observers.push(observer);
     } catch (error) {
-      console.warn('Resource timing observation not supported:', error);
+      console.warn("Resource timing observation not supported:", error);
     }
   }
 
@@ -56,23 +61,23 @@ export class PerformanceMonitor {
     try {
       const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
-          if (entry.entryType === 'longtask') {
-            this.recordMetric('longTask', entry.duration);
+          if (entry.entryType === "longtask") {
+            this.recordMetric("longTask", entry.duration);
           }
         }
       });
-      observer.observe({ entryTypes: ['longtask'] });
+      observer.observe({ entryTypes: ["longtask"] });
       this.observers.push(observer);
     } catch (error) {
-      console.warn('Long task observation not supported:', error);
+      console.warn("Long task observation not supported:", error);
     }
   }
 
   private static observeMemoryUsage(): void {
-    if ('memory' in performance) {
+    if ("memory" in performance) {
       const memory = (performance as any).memory;
-      this.recordMetric('memoryUsed', memory.usedJSHeapSize);
-      this.recordMetric('memoryLimit', memory.jsHeapSizeLimit);
+      this.recordMetric("memoryUsed", memory.usedJSHeapSize);
+      this.recordMetric("memoryLimit", memory.jsHeapSizeLimit);
     }
   }
 
@@ -82,7 +87,7 @@ export class PerformanceMonitor {
     }
     const values = this.metrics.get(name)!;
     values.push(value);
-    
+
     // Keep only last 100 values
     if (values.length > 100) {
       values.shift();
@@ -92,7 +97,7 @@ export class PerformanceMonitor {
   static getMetricStats(name: string): { avg: number; min: number; max: number } | null {
     const values = this.metrics.get(name);
     if (!values || values.length === 0) return null;
-    
+
     return {
       avg: values.reduce((a, b) => a + b, 0) / values.length,
       min: Math.min(...values),
@@ -110,7 +115,7 @@ export class PerformanceMonitor {
   }
 
   static stopMonitoring(): void {
-    this.observers.forEach(observer => observer.disconnect());
+    this.observers.forEach((observer) => observer.disconnect());
     this.observers = [];
   }
 }
@@ -121,14 +126,17 @@ export class PerformanceMonitor {
 export class ImageOptimizer {
   private static imageCache = new Map<string, string>();
 
-  static async optimizeImage(src: string, options: {
-    width?: number;
-    height?: number;
-    quality?: number;
-    format?: 'webp' | 'jpeg' | 'png';
-  } = {}): Promise<string> {
+  static async optimizeImage(
+    src: string,
+    options: {
+      width?: number;
+      height?: number;
+      quality?: number;
+      format?: "webp" | "jpeg" | "png";
+    } = {},
+  ): Promise<string> {
     const cacheKey = `${src}-${JSON.stringify(options)}`;
-    
+
     if (this.imageCache.has(cacheKey)) {
       return this.imageCache.get(cacheKey)!;
     }
@@ -136,34 +144,38 @@ export class ImageOptimizer {
     return new Promise((resolve) => {
       const img = new Image();
       img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d')!;
-        
-        const { width = img.width, height = img.height, quality = 0.8, format = 'webp' } = options;
-        
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d")!;
+
+        const { width = img.width, height = img.height, quality = 0.8, format = "webp" } = options;
+
         canvas.width = width;
         canvas.height = height;
-        
+
         ctx.drawImage(img, 0, 0, width, height);
-        
-        canvas.toBlob((blob) => {
-          if (blob) {
-            const url = URL.createObjectURL(blob);
-            this.imageCache.set(cacheKey, url);
-            resolve(url);
-          } else {
-            resolve(src);
-          }
-        }, `image/${format}`, quality);
+
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              const url = URL.createObjectURL(blob);
+              this.imageCache.set(cacheKey, url);
+              resolve(url);
+            } else {
+              resolve(src);
+            }
+          },
+          `image/${format}`,
+          quality,
+        );
       };
-      
+
       img.onerror = () => resolve(src);
       img.src = src;
     });
   }
 
   static preloadImages(urls: string[]): Promise<void[]> {
-    return Promise.all(urls.map(url => this.preloadImage(url)));
+    return Promise.all(urls.map((url) => this.preloadImage(url)));
   }
 
   static preloadImage(url: string): Promise<void> {
@@ -183,20 +195,23 @@ export class ResourceOptimizer {
   private static loadedScripts = new Set<string>();
   private static loadedStyles = new Set<string>();
 
-  static async loadScript(src: string, options: { async?: boolean; defer?: boolean } = {}): Promise<void> {
+  static async loadScript(
+    src: string,
+    options: { async?: boolean; defer?: boolean } = {},
+  ): Promise<void> {
     if (this.loadedScripts.has(src)) return;
 
     return new Promise((resolve, reject) => {
-      const script = document.createElement('script');
+      const script = document.createElement("script");
       script.src = src;
       script.async = options.async ?? true;
       script.defer = options.defer ?? false;
-      
+
       script.onload = () => {
         this.loadedScripts.add(src);
         resolve();
       };
-      
+
       script.onerror = reject;
       document.head.appendChild(script);
     });
@@ -206,45 +221,48 @@ export class ResourceOptimizer {
     if (this.loadedStyles.has(href)) return;
 
     return new Promise((resolve, reject) => {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
       link.href = href;
-      
+
       link.onload = () => {
         this.loadedStyles.add(href);
         resolve();
       };
-      
+
       link.onerror = reject;
       document.head.appendChild(link);
     });
   }
 
-  static prefetchResource(url: string, type: 'script' | 'style' | 'image' | 'font'): void {
-    const link = document.createElement('link');
-    link.rel = 'prefetch';
+  static prefetchResource(url: string, type: "script" | "style" | "image" | "font"): void {
+    const link = document.createElement("link");
+    link.rel = "prefetch";
     link.href = url;
-    
-    if (type === 'script') {
-      link.as = 'script';
-    } else if (type === 'style') {
-      link.as = 'style';
-    } else if (type === 'image') {
-      link.as = 'image';
-    } else if (type === 'font') {
-      link.as = 'font';
-      link.type = 'font/woff2';
+
+    if (type === "script") {
+      link.as = "script";
+    } else if (type === "style") {
+      link.as = "style";
+    } else if (type === "image") {
+      link.as = "image";
+    } else if (type === "font") {
+      link.as = "font";
+      link.type = "font/woff2";
     }
-    
+
     document.head.appendChild(link);
   }
 
   static preloadCriticalResources(): void {
     // Preload critical fonts
-    this.prefetchResource('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap', 'style');
-    
+    this.prefetchResource(
+      "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap",
+      "style",
+    );
+
     // Preload critical images
-    this.prefetchResource('/hero-democracy.jpg', 'image');
+    this.prefetchResource("/hero-democracy.jpg", "image");
   }
 }
 
@@ -265,7 +283,7 @@ export class VirtualScroller {
     this.items = items;
     this.itemHeight = itemHeight;
     this.visibleCount = Math.ceil(container.clientHeight / itemHeight) + 2;
-    
+
     this.setupScrollListener();
     this.render();
   }
@@ -277,7 +295,7 @@ export class VirtualScroller {
       this.render();
     }, 16); // 60fps
 
-    this.container.addEventListener('scroll', throttledScroll);
+    this.container.addEventListener("scroll", throttledScroll);
   }
 
   private updateIndices(): void {
@@ -287,23 +305,23 @@ export class VirtualScroller {
 
   private render(): void {
     const fragment = document.createDocumentFragment();
-    
+
     for (let i = this.startIndex; i <= this.endIndex; i++) {
       const item = this.items[i];
       const element = this.createItemElement(item, i);
       fragment.appendChild(element);
     }
-    
-    this.container.innerHTML = '';
+
+    this.container.innerHTML = "";
     this.container.appendChild(fragment);
   }
 
   private createItemElement(item: any, index: number): HTMLElement {
-    const element = document.createElement('div');
+    const element = document.createElement("div");
     element.style.height = `${this.itemHeight}px`;
-    element.style.position = 'absolute';
+    element.style.position = "absolute";
     element.style.top = `${index * this.itemHeight}px`;
-    element.style.width = '100%';
+    element.style.width = "100%";
     element.textContent = item.toString(); // Customize based on your data structure
     return element;
   }
@@ -322,7 +340,7 @@ export class LazyLoader {
   private static observer: IntersectionObserver;
 
   static initialize(): void {
-    if ('IntersectionObserver' in window) {
+    if ("IntersectionObserver" in window) {
       this.observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
@@ -333,9 +351,9 @@ export class LazyLoader {
           });
         },
         {
-          rootMargin: '50px',
+          rootMargin: "50px",
           threshold: 0.1,
-        }
+        },
       );
     }
   }
@@ -354,13 +372,13 @@ export class LazyLoader {
 
   private static loadElement(element: HTMLElement): void {
     if (element.dataset.src) {
-      if (element.tagName === 'IMG') {
+      if (element.tagName === "IMG") {
         const img = element as HTMLImageElement;
         img.src = img.dataset.src;
-        img.onload = () => img.classList.add('loaded');
+        img.onload = () => img.classList.add("loaded");
       } else {
         element.style.backgroundImage = `url(${element.dataset.src})`;
-        element.classList.add('loaded');
+        element.classList.add("loaded");
       }
     }
   }
@@ -379,13 +397,17 @@ export class LazyLoader {
  * Caching utilities
  */
 export class CacheManager {
-  private static cache = new Map<string, {
-    data: any;
-    timestamp: number;
-    ttl: number;
-  }>();
+  private static cache = new Map<
+    string,
+    {
+      data: unknown;
+      timestamp: number;
+      ttl: number;
+    }
+  >();
 
-  static set(key: string, data: any, ttl: number = 300000): void { // 5 minutes default TTL
+  static set<T>(key: string, data: T, ttl: number = 300000): void {
+    // 5 minutes default TTL
     this.cache.set(key, {
       data,
       timestamp: Date.now(),
@@ -393,16 +415,16 @@ export class CacheManager {
     });
   }
 
-  static get(key: string): any | null {
+  static get<T>(key: string): T | null {
     const item = this.cache.get(key);
     if (!item) return null;
-    
+
     if (Date.now() - item.timestamp > item.ttl) {
       this.cache.delete(key);
       return null;
     }
-    
-    return item.data;
+
+    return item.data as T;
   }
 
   static delete(key: string): boolean {
@@ -433,7 +455,7 @@ export class CacheManager {
 export class BundleOptimizer {
   private static loadedChunks = new Set<string>();
 
-  static async loadChunk(chunkName: string): Promise<any> {
+  static async loadChunk<T>(chunkName: string): Promise<T> {
     if (this.loadedChunks.has(chunkName)) {
       return this.getChunk(chunkName);
     }
@@ -449,12 +471,12 @@ export class BundleOptimizer {
     }
   }
 
-  private static getChunk(chunkName: string): any {
-    return CacheManager.get(`chunk:${chunkName}`);
+  private static getChunk<T>(chunkName: string): T | null {
+    return CacheManager.get<T>(`chunk:${chunkName}`);
   }
 
   static preloadChunks(chunkNames: string[]): Promise<void[]> {
-    return Promise.all(chunkNames.map(name => this.loadChunk(name)));
+    return Promise.all(chunkNames.map((name) => this.loadChunk(name)));
   }
 }
 
@@ -462,41 +484,45 @@ export class BundleOptimizer {
  * Network optimization utilities
  */
 export class NetworkOptimizer {
-  private static requestCache = new Map<string, any>();
+  private static requestCache = new Map<string, unknown>();
 
-  static async cachedFetch(url: string, options: RequestInit = {}, ttl: number = 300000): Promise<Response> {
+  static async cachedFetch(
+    url: string,
+    options: RequestInit = {},
+    ttl: number = 300000,
+  ): Promise<Response> {
     const cacheKey = `${url}:${JSON.stringify(options)}`;
     const cached = CacheManager.get(cacheKey);
-    
+
     if (cached) {
       return new Response(JSON.stringify(cached), {
         status: 200,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { "Content-Type": "application/json" },
       });
     }
 
     const response = await fetch(url, options);
-    
+
     if (response.ok) {
       const data = await response.json();
       CacheManager.set(cacheKey, data, ttl);
     }
-    
+
     return response;
   }
 
   static batchRequests<T>(requests: (() => Promise<T>)[]): Promise<T[]> {
-    return Promise.all(requests.map(request => request()));
+    return Promise.all(requests.map((request) => request()));
   }
 
   static async requestWithTimeout<T>(
     request: () => Promise<T>,
-    timeout: number = 10000
+    timeout: number = 10000,
   ): Promise<T> {
     return Promise.race([
       request(),
-      new Promise<never>((_, reject) => 
-        setTimeout(() => reject(new Error('Request timeout')), timeout)
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("Request timeout")), timeout),
       ),
     ]);
   }
@@ -513,24 +539,24 @@ export class MemoryManager {
   }
 
   static cleanup(): void {
-    this.cleanupCallbacks.forEach(callback => {
+    this.cleanupCallbacks.forEach((callback) => {
       try {
         callback();
       } catch (error) {
-        console.error('Cleanup callback failed:', error);
+        console.error("Cleanup callback failed:", error);
       }
     });
     this.cleanupCallbacks = [];
   }
 
   static monitorMemory(): void {
-    if ('memory' in performance) {
+    if ("memory" in performance) {
       const memory = (performance as any).memory;
       const used = (memory.usedJSHeapSize / 1024 / 1024).toFixed(2);
       const total = (memory.jsHeapSizeLimit / 1024 / 1024).toFixed(2);
-      
+
       console.log(`Memory Usage: ${used}MB / ${total}MB`);
-      
+
       // Trigger cleanup if memory usage is high
       if (memory.usedJSHeapSize / memory.jsHeapSizeLimit > 0.8) {
         this.cleanup();
@@ -540,7 +566,7 @@ export class MemoryManager {
   }
 
   static forceGarbageCollection(): void {
-    if ('gc' in window) {
+    if ("gc" in window) {
       (window as any).gc();
     } else {
       // Fallback: create temporary objects to trigger GC
@@ -551,11 +577,11 @@ export class MemoryManager {
 }
 
 // Initialize performance monitoring
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   PerformanceMonitor.startMonitoring();
   ResourceOptimizer.preloadCriticalResources();
   LazyLoader.initialize();
-  
+
   // Set up periodic cleanup
   setInterval(() => {
     CacheManager.cleanup();

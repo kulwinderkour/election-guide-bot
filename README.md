@@ -26,7 +26,7 @@ A comprehensive, intelligent chatbot designed to help Indian citizens understand
 
 ## 📋 Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm or bun
 - Google AI API key
 - Google Maps API key
@@ -35,12 +35,14 @@ A comprehensive, intelligent chatbot designed to help Indian citizens understand
 ## 🛠️ Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/kulwinderkour/election-guide-bot.git
    cd election-guide-bot
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    # or
@@ -48,11 +50,13 @@ A comprehensive, intelligent chatbot designed to help Indian citizens understand
    ```
 
 3. **Set up environment variables**
+
    ```bash
    cp env.example .env
    ```
-   
+
    Update `.env` with your API keys:
+
    ```env
    VITE_GOOGLE_AI_API_KEY=your_google_ai_api_key
    VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
@@ -87,6 +91,7 @@ npm run test:ui
 ## 📦 Build & Deploy
 
 ### **Build**
+
 ```bash
 npm run build
 ```
@@ -94,6 +99,7 @@ npm run build
 ### **Deployment Options**
 
 #### **Cloudflare Workers** (Recommended)
+
 ```bash
 npm install wrangler
 wrangler login
@@ -101,18 +107,21 @@ wrangler deploy
 ```
 
 #### **Vercel**
+
 ```bash
 npm install -g vercel
 vercel
 ```
 
 #### **Netlify**
+
 ```bash
 npm install -g netlify-cli
 netlify deploy --prod
 ```
 
 #### **Railway**
+
 ```bash
 npm install -g @railway/cli
 railway login
@@ -147,13 +156,13 @@ election-guide-bot/
 
 ### **Environment Variables**
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `VITE_GOOGLE_AI_API_KEY` | Google Gemini AI API key | Yes |
-| `VITE_GOOGLE_MAPS_API_KEY` | Google Maps API key | Yes |
-| `VITE_GA_MEASUREMENT_ID` | Google Analytics ID | Optional |
-| `VITE_SUPABASE_URL` | Supabase project URL | Yes |
-| `VITE_SUPABASE_ANON_KEY` | Supabase anonymous key | Yes |
+| Variable                   | Description              | Required |
+| -------------------------- | ------------------------ | -------- |
+| `VITE_GOOGLE_AI_API_KEY`   | Google Gemini AI API key | Yes      |
+| `VITE_GOOGLE_MAPS_API_KEY` | Google Maps API key      | Yes      |
+| `VITE_GA_MEASUREMENT_ID`   | Google Analytics ID      | Optional |
+| `VITE_SUPABASE_URL`        | Supabase project URL     | Yes      |
+| `VITE_SUPABASE_ANON_KEY`   | Supabase anonymous key   | Yes      |
 
 ### **Google APIs Setup**
 
@@ -181,6 +190,7 @@ election-guide-bot/
    - Get URL and anon key
 
 2. **Set up Database**
+
    ```sql
    -- Create tables for users, chat sessions, quiz results, etc.
    ```
@@ -194,6 +204,7 @@ election-guide-bot/
 ## 🎯 Features Deep Dive
 
 ### **AI Chat System**
+
 - Powered by Google Gemini AI
 - Context-aware conversations
 - Multi-language support
@@ -201,12 +212,14 @@ election-guide-bot/
 - Personalized responses
 
 ### **Location Services**
+
 - Geocoding user addresses
 - Finding nearby polling stations
 - State-specific election information
 - Directions and navigation
 
 ### **Accessibility**
+
 - WCAG 2.1 AA compliant
 - Screen reader support
 - Keyboard navigation
@@ -214,6 +227,7 @@ election-guide-bot/
 - Reduced motion support
 
 ### **Performance**
+
 - Code splitting and lazy loading
 - Image optimization
 - Caching strategies
@@ -221,6 +235,7 @@ election-guide-bot/
 - Performance monitoring
 
 ### **Security**
+
 - Content Security Policy
 - Input validation and sanitization
 - Rate limiting
@@ -273,6 +288,7 @@ For support, questions, or contributions:
 ## 🌍 Impact
 
 This bot aims to:
+
 - Increase voter awareness and participation
 - Simplify the electoral process for citizens
 - Provide accurate, unbiased election information

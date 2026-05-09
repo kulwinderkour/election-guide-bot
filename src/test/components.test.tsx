@@ -1,12 +1,20 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { BrowserRouter } from '@tanstack/react-router';
-import FloatingRobot from '@/components/FloatingRobot';
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { BrowserRouter } from "@tanstack/react-router";
+import FloatingRobot from "@/components/FloatingRobot";
 
 // Mock the Link component
-vi.mock('@tanstack/react-router', () => ({
-  Link: ({ children, to, ...props }: any) => (
+vi.mock("@tanstack/react-router", () => ({
+  Link: ({
+    children,
+    to,
+    ...props
+  }: {
+    children: React.ReactNode;
+    to: string;
+    [key: string]: any;
+  }) => (
     <a href={to} {...props}>
       {children}
     </a>
@@ -14,228 +22,233 @@ vi.mock('@tanstack/react-router', () => ({
 }));
 
 // Mock lucide-react icons
-vi.mock('lucide-react', () => ({
-  MessageCircle: ({ className }: { className: string }) => (
+vi.mock("lucide-react", () => ({
+  MessageCircle: ({ className }: { className?: string }) => (
     <div data-testid="message-circle" className={className} />
   ),
-  Sparkles: ({ className }: { className: string }) => (
+  Sparkles: ({ className }: { className?: string }) => (
     <div data-testid="sparkles" className={className} />
+  ),
+  Vote: ({ className }: { className?: string }) => <div data-testid="vote" className={className} />,
+  LogIn: ({ className }: { className?: string }) => (
+    <div data-testid="login" className={className} />
   ),
 }));
 
 const renderWithRouter = (component: React.ReactElement) => {
-  return render(
-    <BrowserRouter>
-      {component}
-    </BrowserRouter>
-  );
+  return render(<BrowserRouter>{component}</BrowserRouter>);
 };
 
-describe('FloatingRobot Component', () => {
+describe("FloatingRobot Component", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should render the floating robot', () => {
+  it("should render the floating robot", () => {
     renderWithRouter(<FloatingRobot />);
-    
+
     // Check if the main container exists
-    const robotContainer = screen.getByRole('link');
+    const robotContainer = screen.getByRole("link");
     expect(robotContainer).toBeInTheDocument();
-    expect(robotContainer).toHaveAttribute('href', '/chat');
+    expect(robotContainer).toHaveAttribute("href", "/chat");
   });
 
-  it('should have correct positioning classes', () => {
+  it("should have correct positioning classes", () => {
     renderWithRouter(<FloatingRobot />);
-    
-    const robotContainer = screen.getByRole('link');
-    expect(robotContainer.parentElement).toHaveClass('fixed', 'bottom-6', 'right-6', 'z-50');
+
+    const robotContainer = screen.getByRole("link");
+    expect(robotContainer.parentElement).toHaveClass("fixed", "bottom-6", "right-6", "z-50");
   });
 
-  it('should have hover effects', () => {
+  it("should have hover effects", () => {
     renderWithRouter(<FloatingRobot />);
-    
-    const robotContainer = screen.getByRole('link');
-    expect(robotContainer).toHaveClass('group');
+
+    const robotContainer = screen.getByRole("link");
+    expect(robotContainer).toHaveClass("group");
   });
 
-  it('should display the chat icon', () => {
+  it("should display the chat icon", () => {
     renderWithRouter(<FloatingRobot />);
-    
-    const messageIcon = screen.getByTestId('message-circle');
+
+    const messageIcon = screen.getByTestId("message-circle");
     expect(messageIcon).toBeInTheDocument();
   });
 
-  it('should display sparkles around the robot', () => {
+  it("should display sparkles around the robot", () => {
     renderWithRouter(<FloatingRobot />);
-    
-    const sparkles = screen.getAllByTestId('sparkles');
+
+    const sparkles = screen.getAllByTestId("sparkles");
     expect(sparkles).toHaveLength(3); // Should have 3 sparkle elements
   });
 
-  it('should have graduation cap', () => {
+  it("should have graduation cap", () => {
     renderWithRouter(<FloatingRobot />);
-    
+
     // Check for graduation cap elements
-    const capElements = document.querySelectorAll('.bg-blue-800');
+    const capElements = document.querySelectorAll(".bg-blue-800");
     expect(capElements.length).toBeGreaterThan(0);
   });
 
-  it('should have facial features', () => {
+  it("should have facial features", () => {
     renderWithRouter(<FloatingRobot />);
-    
+
     // Check for eyes
-    const eyes = document.querySelectorAll('.bg-white.rounded-full.border');
+    const eyes = document.querySelectorAll(".bg-white.rounded-full.border");
     expect(eyes.length).toBe(2);
-    
+
     // Check for nose
-    const nose = document.querySelector('.bg-orange-400.rounded-full');
+    const nose = document.querySelector(".bg-orange-400.rounded-full");
     expect(nose).toBeInTheDocument();
-    
+
     // Check for blush cheeks
-    const cheeks = document.querySelectorAll('.bg-pink-200.rounded-full');
+    const cheeks = document.querySelectorAll(".bg-pink-200.rounded-full");
     expect(cheeks.length).toBe(2);
   });
 
-  it('should have correct accessibility attributes', () => {
+  it("should have correct accessibility attributes", () => {
     renderWithRouter(<FloatingRobot />);
-    
-    const robotContainer = screen.getByRole('link');
-    expect(robotContainer).toHaveAttribute('href', '/chat');
+
+    const robotContainer = screen.getByRole("link");
+    expect(robotContainer).toHaveAttribute("href", "/chat");
   });
 
-  it('should handle click events', async () => {
+  it("should handle click events", async () => {
     const user = userEvent.setup();
     renderWithRouter(<FloatingRobot />);
-    
-    const robotContainer = screen.getByRole('link');
-    
+
+    const robotContainer = screen.getByRole("link");
+
     await user.click(robotContainer);
-    
+
     // Should navigate to /chat (handled by the Link component)
-    expect(robotContainer.closest('a')).toHaveAttribute('href', '/chat');
+    expect(robotContainer.closest("a")).toHaveAttribute("href", "/chat");
   });
 
-  it('should have animation classes', () => {
+  it("should have animation classes", () => {
     renderWithRouter(<FloatingRobot />);
-    
-    const robotContainer = screen.getByRole('link');
-    expect(robotContainer).toHaveClass('animate-float');
+
+    const robotContainer = screen.getByRole("link");
+    expect(robotContainer).toHaveClass("animate-float");
   });
 
-  it('should have gradient background', () => {
+  it("should have gradient background", () => {
     renderWithRouter(<FloatingRobot />);
-    
-    const robotContainer = screen.getByRole('link');
-    expect(robotContainer).toHaveClass('bg-gradient-to-br', 'from-sky-200', 'via-sky-300', 'to-blue-300');
+
+    const robotContainer = screen.getByRole("link");
+    expect(robotContainer).toHaveClass(
+      "bg-gradient-to-br",
+      "from-sky-200",
+      "via-sky-300",
+      "to-blue-300",
+    );
   });
 
-  it('should have proper size classes', () => {
+  it("should have proper size classes", () => {
     renderWithRouter(<FloatingRobot />);
-    
-    const robotContainer = screen.getByRole('link');
-    expect(robotContainer).toHaveClass('h-16', 'w-16');
+
+    const robotContainer = screen.getByRole("link");
+    expect(robotContainer).toHaveClass("h-16", "w-16");
   });
 
-  it('should have shadow effects', () => {
+  it("should have shadow effects", () => {
     renderWithRouter(<FloatingRobot />);
-    
-    const robotContainer = screen.getByRole('link');
-    expect(robotContainer).toHaveClass('shadow-elegant');
+
+    const robotContainer = screen.getByRole("link");
+    expect(robotContainer).toHaveClass("shadow-elegant");
   });
 
-  it('should have hover scale effect', () => {
+  it("should have hover scale effect", () => {
     renderWithRouter(<FloatingRobot />);
-    
-    const robotContainer = screen.getByRole('link');
-    expect(robotContainer).toHaveClass('hover:scale-110');
+
+    const robotContainer = screen.getByRole("link");
+    expect(robotContainer).toHaveClass("hover:scale-110");
   });
 
-  it('should have hover glow effect', () => {
+  it("should have hover glow effect", () => {
     renderWithRouter(<FloatingRobot />);
-    
-    const robotContainer = screen.getByRole('link');
-    expect(robotContainer).toHaveClass('hover:shadow-glow');
+
+    const robotContainer = screen.getByRole("link");
+    expect(robotContainer).toHaveClass("hover:shadow-glow");
   });
 
-  it('should have transition effects', () => {
+  it("should have transition effects", () => {
     renderWithRouter(<FloatingRobot />);
-    
-    const robotContainer = screen.getByRole('link');
-    expect(robotContainer).toHaveClass('transition-all', 'duration-300');
+
+    const robotContainer = screen.getByRole("link");
+    expect(robotContainer).toHaveClass("transition-all", "duration-300");
   });
 });
 
-describe('FloatingRobot Accessibility', () => {
-  it('should be keyboard accessible', async () => {
+describe("FloatingRobot Accessibility", () => {
+  it("should be keyboard accessible", async () => {
     const user = userEvent.setup();
     renderWithRouter(<FloatingRobot />);
-    
-    const robotContainer = screen.getByRole('link');
-    
+
+    const robotContainer = screen.getByRole("link");
+
     // Focus the element
     robotContainer.focus();
     expect(robotContainer).toHaveFocus();
-    
+
     // Activate with Enter key
-    await user.keyboard('{Enter}');
-    expect(robotContainer.closest('a')).toHaveAttribute('href', '/chat');
+    await user.keyboard("{Enter}");
+    expect(robotContainer.closest("a")).toHaveAttribute("href", "/chat");
   });
 
-  it('should have proper ARIA attributes', () => {
+  it("should have proper ARIA attributes", () => {
     renderWithRouter(<FloatingRobot />);
-    
-    const robotContainer = screen.getByRole('link');
-    
+
+    const robotContainer = screen.getByRole("link");
+
     // Should have a meaningful href for navigation
-    expect(robotContainer).toHaveAttribute('href', '/chat');
+    expect(robotContainer).toHaveAttribute("href", "/chat");
   });
 
-  it('should have sufficient color contrast', () => {
+  it("should have sufficient color contrast", () => {
     renderWithRouter(<FloatingRobot />);
-    
-    const robotContainer = screen.getByRole('link');
-    
+
+    const robotContainer = screen.getByRole("link");
+
     // Check that it has background classes for contrast
-    expect(robotContainer).toHaveClass('bg-gradient-to-br');
+    expect(robotContainer).toHaveClass("bg-gradient-to-br");
   });
 });
 
-describe('FloatingRobot Performance', () => {
-  it('should not cause memory leaks', () => {
+describe("FloatingRobot Performance", () => {
+  it("should not cause memory leaks", () => {
     const { unmount } = renderWithRouter(<FloatingRobot />);
-    
+
     // Component should unmount without errors
     expect(() => unmount()).not.toThrow();
   });
 
-  it('should have optimized animations', () => {
+  it("should have optimized animations", () => {
     renderWithRouter(<FloatingRobot />);
-    
+
     // Check for CSS animation classes instead of JavaScript animations
-    const sparkles = screen.getAllByTestId('sparkles');
-    sparkles.forEach(sparkle => {
-      expect(sparkle).toHaveClass('animate-spin');
+    const sparkles = screen.getAllByTestId("sparkles");
+    sparkles.forEach((sparkle) => {
+      expect(sparkle).toHaveClass("animate-spin");
     });
   });
 });
 
-describe('FloatingRobot Error Handling', () => {
-  it('should handle navigation errors gracefully', async () => {
+describe("FloatingRobot Error Handling", () => {
+  it("should handle navigation errors gracefully", async () => {
     const user = userEvent.setup();
     renderWithRouter(<FloatingRobot />);
-    
-    const robotContainer = screen.getByRole('link');
-    
+
+    const robotContainer = screen.getByRole("link");
+
     // Mock console.error to check for error messages
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
     // Click should not throw errors
     await user.click(robotContainer);
-    
+
     // Should not have logged errors
     expect(consoleSpy).not.toHaveBeenCalled();
-    
+
     consoleSpy.mockRestore();
   });
 });

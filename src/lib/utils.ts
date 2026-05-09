@@ -15,11 +15,11 @@ export function cn(...inputs: ClassValue[]) {
  * Format date in user-friendly format
  */
 export function formatDate(date: Date | string, options: Intl.DateTimeFormatOptions = {}): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
-  return new Intl.DateTimeFormat('en-IN', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
+  const dateObj = typeof date === "string" ? new Date(date) : date;
+  return new Intl.DateTimeFormat("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
     ...options,
   }).format(dateObj);
 }
@@ -28,10 +28,10 @@ export function formatDate(date: Date | string, options: Intl.DateTimeFormatOpti
  * Format time in user-friendly format
  */
 export function formatTime(date: Date | string): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
-  return new Intl.DateTimeFormat('en-IN', {
-    hour: '2-digit',
-    minute: '2-digit',
+  const dateObj = typeof date === "string" ? new Date(date) : date;
+  return new Intl.DateTimeFormat("en-IN", {
+    hour: "2-digit",
+    minute: "2-digit",
     hour12: true,
   }).format(dateObj);
 }
@@ -40,11 +40,11 @@ export function formatTime(date: Date | string): string {
  * Format relative time (e.g., "2 hours ago", "3 days ago")
  */
 export function formatRelativeTime(date: Date | string): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  const dateObj = typeof date === "string" ? new Date(date) : date;
   const now = new Date();
   const diffInSeconds = Math.floor((now.getTime() - dateObj.getTime()) / 1000);
 
-  if (diffInSeconds < 60) return 'just now';
+  if (diffInSeconds < 60) return "just now";
   if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
   if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
   if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`;
@@ -66,7 +66,7 @@ export function isValidEmail(email: string): boolean {
  */
 export function isValidIndianPhone(phone: string): boolean {
   const phoneRegex = /^[6-9]\d{9}$/;
-  return phoneRegex.test(phone.replace(/\D/g, ''));
+  return phoneRegex.test(phone.replace(/\D/g, ""));
 }
 
 /**
@@ -80,18 +80,15 @@ export function isValidVotingAge(age: number): boolean {
  * Sanitize user input to prevent XSS
  */
 export function sanitizeInput(input: string): string {
-  return input
-    .replace(/[<>]/g, '')
-    .trim()
-    .substring(0, 1000); // Limit length
+  return input.replace(/[<>]/g, "").trim().substring(0, 1000); // Limit length
 }
 
 /**
  * Generate random ID
  */
 export function generateId(length: number = 8): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
   for (let i = 0; i < length; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
@@ -101,9 +98,9 @@ export function generateId(length: number = 8): string {
 /**
  * Debounce function for search inputs
  */
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
-  wait: number
+  wait: number,
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout;
   return (...args: Parameters<T>) => {
@@ -115,9 +112,9 @@ export function debounce<T extends (...args: any[]) => any>(
 /**
  * Throttle function for scroll events
  */
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (...args: unknown[]) => unknown>(
   func: T,
-  limit: number
+  limit: number,
 ): (...args: Parameters<T>) => void {
   let inThrottle: boolean;
   return (...args: Parameters<T>) => {
@@ -138,12 +135,12 @@ export async function copyToClipboard(text: string): Promise<boolean> {
     return true;
   } catch (error) {
     // Fallback for older browsers
-    const textArea = document.createElement('textarea');
+    const textArea = document.createElement("textarea");
     textArea.value = text;
     document.body.appendChild(textArea);
     textArea.select();
     try {
-      document.execCommand('copy');
+      document.execCommand("copy");
       return true;
     } catch (fallbackError) {
       return false;
@@ -157,7 +154,7 @@ export async function copyToClipboard(text: string): Promise<boolean> {
  * Format large numbers with commas
  */
 export function formatNumber(num: number): string {
-  return new Intl.NumberFormat('en-IN').format(num);
+  return new Intl.NumberFormat("en-IN").format(num);
 }
 
 /**
@@ -173,9 +170,9 @@ export function calculatePercentage(value: number, total: number): number {
  */
 export function getInitials(name: string): string {
   return name
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase())
-    .join('')
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase())
+    .join("")
     .substring(0, 2);
 }
 
@@ -189,11 +186,11 @@ export function isMobile(): boolean {
 /**
  * Get device type
  */
-export function getDeviceType(): 'mobile' | 'tablet' | 'desktop' {
+export function getDeviceType(): "mobile" | "tablet" | "desktop" {
   const width = window.innerWidth;
-  if (width < 768) return 'mobile';
-  if (width < 1024) return 'tablet';
-  return 'desktop';
+  if (width < 768) return "mobile";
+  if (width < 1024) return "tablet";
+  return "desktop";
 }
 
 /**
@@ -205,7 +202,7 @@ export function scrollToElement(elementId: string, offset: number = 0): void {
     const top = element.offsetTop - offset;
     window.scrollTo({
       top,
-      behavior: 'smooth',
+      behavior: "smooth",
     });
   }
 }
@@ -214,11 +211,11 @@ export function scrollToElement(elementId: string, offset: number = 0): void {
  * Format file size
  */
 export function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) return "0 Bytes";
   const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const sizes = ["Bytes", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 }
 
 /**
@@ -262,21 +259,21 @@ export const storage = {
     try {
       localStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
-      console.error('Failed to save to localStorage:', error);
+      console.error("Failed to save to localStorage:", error);
     }
   },
   remove: (key: string): void => {
     try {
       localStorage.removeItem(key);
     } catch (error) {
-      console.error('Failed to remove from localStorage:', error);
+      console.error("Failed to remove from localStorage:", error);
     }
   },
   clear: (): void => {
     try {
       localStorage.clear();
     } catch (error) {
-      console.error('Failed to clear localStorage:', error);
+      console.error("Failed to clear localStorage:", error);
     }
   },
 };
@@ -293,7 +290,7 @@ export function handleError(error: unknown): ErrorMessage {
     };
   }
   return {
-    message: 'An unknown error occurred',
+    message: "An unknown error occurred",
     timestamp: new Date(),
   };
 }
@@ -304,26 +301,26 @@ export function handleError(error: unknown): ErrorMessage {
 export async function retry<T>(
   fn: () => Promise<T>,
   maxAttempts: number = 3,
-  delay: number = 1000
+  delay: number = 1000,
 ): Promise<T> {
   let lastError: Error;
-  
+
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       return await fn();
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
-      
+
       if (attempt === maxAttempts) {
         throw lastError;
       }
-      
+
       // Exponential backoff
       const backoffDelay = delay * Math.pow(2, attempt - 1);
-      await new Promise(resolve => setTimeout(resolve, backoffDelay));
+      await new Promise((resolve) => setTimeout(resolve, backoffDelay));
     }
   }
-  
+
   throw lastError!;
 }
 
@@ -338,15 +335,15 @@ export function isOnline(): boolean {
  * Get browser language
  */
 export function getBrowserLanguage(): string {
-  return navigator.language || 'en';
+  return navigator.language || "en";
 }
 
 /**
  * Format currency for Indian Rupees
  */
 export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
   }).format(amount);
 }

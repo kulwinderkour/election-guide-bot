@@ -3,7 +3,7 @@
  * Implements WCAG 2.1 AA compliance and inclusive design
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 /**
  * Screen reader announcements
@@ -12,46 +12,46 @@ export class ScreenReader {
   private static announcementElement: HTMLElement | null = null;
 
   static initialize(): void {
-    if (typeof document === 'undefined') return;
+    if (typeof document === "undefined") return;
 
     // Create hidden announcement element
-    this.announcementElement = document.createElement('div');
-    this.announcementElement.setAttribute('aria-live', 'polite');
-    this.announcementElement.setAttribute('aria-atomic', 'true');
-    this.announcementElement.className = 'sr-only';
-    this.announcementElement.style.position = 'absolute';
-    this.announcementElement.style.left = '-10000px';
-    this.announcementElement.style.width = '1px';
-    this.announcementElement.style.height = '1px';
-    this.announcementElement.style.overflow = 'hidden';
-    
+    this.announcementElement = document.createElement("div");
+    this.announcementElement.setAttribute("aria-live", "polite");
+    this.announcementElement.setAttribute("aria-atomic", "true");
+    this.announcementElement.className = "sr-only";
+    this.announcementElement.style.position = "absolute";
+    this.announcementElement.style.left = "-10000px";
+    this.announcementElement.style.width = "1px";
+    this.announcementElement.style.height = "1px";
+    this.announcementElement.style.overflow = "hidden";
+
     document.body.appendChild(this.announcementElement);
   }
 
-  static announce(message: string, priority: 'polite' | 'assertive' = 'polite'): void {
+  static announce(message: string, priority: "polite" | "assertive" = "polite"): void {
     if (!this.announcementElement) {
       this.initialize();
     }
 
     if (this.announcementElement) {
-      this.announcementElement.setAttribute('aria-live', priority);
+      this.announcementElement.setAttribute("aria-live", priority);
       this.announcementElement.textContent = message;
-      
+
       // Clear after announcement
       setTimeout(() => {
         if (this.announcementElement) {
-          this.announcementElement.textContent = '';
+          this.announcementElement.textContent = "";
         }
       }, 1000);
     }
   }
 
   static announceError(error: string): void {
-    this.announce(`Error: ${error}`, 'assertive');
+    this.announce(`Error: ${error}`, "assertive");
   }
 
   static announceSuccess(success: string): void {
-    this.announce(`Success: ${success}`, 'polite');
+    this.announce(`Success: ${success}`, "polite");
   }
 }
 
@@ -60,24 +60,25 @@ export class ScreenReader {
  */
 export class FocusManager {
   private static focusableSelectors = [
-    'button:not([disabled])',
-    'input:not([disabled])',
-    'select:not([disabled])',
-    'textarea:not([disabled])',
-    'a[href]',
+    "button:not([disabled])",
+    "input:not([disabled])",
+    "select:not([disabled])",
+    "textarea:not([disabled])",
+    "a[href]",
     '[tabindex]:not([tabindex="-1"])',
     '[contenteditable="true"]',
-  ].join(', ');
+  ].join(", ");
 
   static getFocusableElements(container: HTMLElement): HTMLElement[] {
-    return Array.from(container.querySelectorAll(this.focusableSelectors))
-      .filter(element => {
-        // Check if element is visible and not disabled
-        const style = window.getComputedStyle(element);
-        return style.display !== 'none' && 
-               style.visibility !== 'hidden' && 
-               !element.hasAttribute('disabled');
-      });
+    return Array.from(container.querySelectorAll(this.focusableSelectors)).filter((element) => {
+      // Check if element is visible and not disabled
+      const style = window.getComputedStyle(element);
+      return (
+        style.display !== "none" &&
+        style.visibility !== "hidden" &&
+        !element.hasAttribute("disabled")
+      );
+    });
   }
 
   static trapFocus(container: HTMLElement): () => void {
@@ -86,7 +87,7 @@ export class FocusManager {
     const lastElement = focusableElements[focusableElements.length - 1];
 
     const handleTabKey = (event: KeyboardEvent) => {
-      if (event.key !== 'Tab') return;
+      if (event.key !== "Tab") return;
 
       if (event.shiftKey) {
         // Shift + Tab
@@ -103,7 +104,7 @@ export class FocusManager {
       }
     };
 
-    container.addEventListener('keydown', handleTabKey);
+    container.addEventListener("keydown", handleTabKey);
 
     // Focus first element
     if (firstElement) {
@@ -112,7 +113,7 @@ export class FocusManager {
 
     // Return cleanup function
     return () => {
-      container.removeEventListener('keydown', handleTabKey);
+      container.removeEventListener("keydown", handleTabKey);
     };
   }
 
@@ -129,30 +130,30 @@ export class FocusManager {
 export class KeyboardNavigation {
   static handleEscape(callback: () => void): () => void {
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         callback();
       }
     };
 
-    document.addEventListener('keydown', handleEscape);
+    document.addEventListener("keydown", handleEscape);
 
     return () => {
-      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener("keydown", handleEscape);
     };
   }
 
   static handleArrowKeys(
     container: HTMLElement,
     onSelect: (element: HTMLElement) => void,
-    orientation: 'horizontal' | 'vertical' = 'vertical'
+    orientation: "horizontal" | "vertical" = "vertical",
   ): () => void {
     const focusableElements = FocusManager.getFocusableElements(container);
     let currentIndex = 0;
 
     const handleArrowKey = (event: KeyboardEvent) => {
-      const isVertical = orientation === 'vertical';
-      const nextKey = isVertical ? 'ArrowDown' : 'ArrowRight';
-      const prevKey = isVertical ? 'ArrowUp' : 'ArrowLeft';
+      const isVertical = orientation === "vertical";
+      const nextKey = isVertical ? "ArrowDown" : "ArrowRight";
+      const prevKey = isVertical ? "ArrowUp" : "ArrowLeft";
 
       if (event.key === nextKey) {
         event.preventDefault();
@@ -167,10 +168,10 @@ export class KeyboardNavigation {
       }
     };
 
-    container.addEventListener('keydown', handleArrowKey);
+    container.addEventListener("keydown", handleArrowKey);
 
     return () => {
-      container.removeEventListener('keydown', handleArrowKey);
+      container.removeEventListener("keydown", handleArrowKey);
     };
   }
 }
@@ -186,7 +187,7 @@ export class ColorContrast {
     const rgb = this.hexToRgb(color);
     if (!rgb) return 0;
 
-    const [r, g, b] = rgb.map(value => {
+    const [r, g, b] = rgb.map((value) => {
       value = value / 255;
       return value <= 0.03928 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4);
     });
@@ -223,11 +224,9 @@ export class ColorContrast {
 
   private static hexToRgb(hex: string): [number, number, number] | null {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? [
-      parseInt(result[1], 16),
-      parseInt(result[2], 16),
-      parseInt(result[3], 16)
-    ] : null;
+    return result
+      ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)]
+      : null;
   }
 }
 
@@ -236,47 +235,47 @@ export class ColorContrast {
  */
 export class AriaUtils {
   static setAriaLabel(element: HTMLElement, label: string): void {
-    element.setAttribute('aria-label', label);
+    element.setAttribute("aria-label", label);
   }
 
   static setAriaLabelledby(element: HTMLElement, labelledBy: string): void {
-    element.setAttribute('aria-labelledby', labelledBy);
+    element.setAttribute("aria-labelledby", labelledBy);
   }
 
   static setAriaDescribedby(element: HTMLElement, describedBy: string): void {
-    element.setAttribute('aria-describedby', describedBy);
+    element.setAttribute("aria-describedby", describedBy);
   }
 
   static setAriaExpanded(element: HTMLElement, expanded: boolean): void {
-    element.setAttribute('aria-expanded', expanded.toString());
+    element.setAttribute("aria-expanded", expanded.toString());
   }
 
   static setAriaPressed(element: HTMLElement, pressed: boolean): void {
-    element.setAttribute('aria-pressed', pressed.toString());
+    element.setAttribute("aria-pressed", pressed.toString());
   }
 
   static setAriaSelected(element: HTMLElement, selected: boolean): void {
-    element.setAttribute('aria-selected', selected.toString());
+    element.setAttribute("aria-selected", selected.toString());
   }
 
   static setAriaHidden(element: HTMLElement, hidden: boolean): void {
-    element.setAttribute('aria-hidden', hidden.toString());
+    element.setAttribute("aria-hidden", hidden.toString());
   }
 
   static setRole(element: HTMLElement, role: string): void {
-    element.setAttribute('role', role);
+    element.setAttribute("role", role);
   }
 
-  static setAriaLive(element: HTMLElement, live: 'off' | 'polite' | 'assertive'): void {
-    element.setAttribute('aria-live', live);
+  static setAriaLive(element: HTMLElement, live: "off" | "polite" | "assertive"): void {
+    element.setAttribute("aria-live", live);
   }
 
   static setAriaAtomic(element: HTMLElement, atomic: boolean): void {
-    element.setAttribute('aria-atomic', atomic.toString());
+    element.setAttribute("aria-atomic", atomic.toString());
   }
 
   static setAriaBusy(element: HTMLElement, busy: boolean): void {
-    element.setAttribute('aria-busy', busy.toString());
+    element.setAttribute("aria-busy", busy.toString());
   }
 }
 
@@ -285,43 +284,43 @@ export class AriaUtils {
  */
 export class SkipLinks {
   static createSkipLink(href: string, text: string): HTMLElement {
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = href;
     link.textContent = text;
-    link.className = 'skip-link';
-    
+    link.className = "skip-link";
+
     // Style for skip link
     Object.assign(link.style, {
-      position: 'absolute',
-      top: '-40px',
-      left: '6px',
-      background: '#000',
-      color: '#fff',
-      padding: '8px',
-      textDecoration: 'none',
-      borderRadius: '4px',
-      zIndex: '10000',
-      transition: 'top 0.3s',
+      position: "absolute",
+      top: "-40px",
+      left: "6px",
+      background: "#000",
+      color: "#fff",
+      padding: "8px",
+      textDecoration: "none",
+      borderRadius: "4px",
+      zIndex: "10000",
+      transition: "top 0.3s",
     });
 
     // Show on focus
-    link.addEventListener('focus', () => {
-      link.style.top = '6px';
+    link.addEventListener("focus", () => {
+      link.style.top = "6px";
     });
 
-    link.addEventListener('blur', () => {
-      link.style.top = '-40px';
+    link.addEventListener("blur", () => {
+      link.style.top = "-40px";
     });
 
     return link;
   }
 
   static initializeSkipLinks(): void {
-    if (typeof document === 'undefined') return;
+    if (typeof document === "undefined") return;
 
     // Create skip links
-    const skipToMain = this.createSkipLink('#main', 'Skip to main content');
-    const skipToNavigation = this.createSkipLink('#navigation', 'Skip to navigation');
+    const skipToMain = this.createSkipLink("#main", "Skip to main content");
+    const skipToNavigation = this.createSkipLink("#navigation", "Skip to navigation");
 
     // Add to beginning of body
     document.body.insertBefore(skipToMain, document.body.firstChild);
@@ -334,8 +333,8 @@ export class SkipLinks {
  */
 export class ReducedMotion {
   static prefersReducedMotion(): boolean {
-    if (typeof window === 'undefined') return false;
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }
 
   static getAnimationDuration(defaultDuration: number): number {
@@ -343,19 +342,19 @@ export class ReducedMotion {
   }
 
   static setupReducedMotion(): void {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
     const handleMotionChange = (e: MediaQueryListEvent) => {
       if (e.matches) {
-        document.documentElement.classList.add('reduced-motion');
+        document.documentElement.classList.add("reduced-motion");
       } else {
-        document.documentElement.classList.remove('reduced-motion');
+        document.documentElement.classList.remove("reduced-motion");
       }
     };
 
-    mediaQuery.addEventListener('change', handleMotionChange);
+    mediaQuery.addEventListener("change", handleMotionChange);
     handleMotionChange(mediaQuery as any);
   }
 }
@@ -365,24 +364,24 @@ export class ReducedMotion {
  */
 export class HighContrast {
   static prefersHighContrast(): boolean {
-    if (typeof window === 'undefined') return false;
-    return window.matchMedia('(prefers-contrast: high)').matches;
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(prefers-contrast: high)").matches;
   }
 
   static setupHighContrast(): void {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
-    const mediaQuery = window.matchMedia('(prefers-contrast: high)');
-    
+    const mediaQuery = window.matchMedia("(prefers-contrast: high)");
+
     const handleContrastChange = (e: MediaQueryListEvent) => {
       if (e.matches) {
-        document.documentElement.classList.add('high-contrast');
+        document.documentElement.classList.add("high-contrast");
       } else {
-        document.documentElement.classList.remove('high-contrast');
+        document.documentElement.classList.remove("high-contrast");
       }
     };
 
-    mediaQuery.addEventListener('change', handleContrastChange);
+    mediaQuery.addEventListener("change", handleContrastChange);
     handleContrastChange(mediaQuery as any);
   }
 }
@@ -409,7 +408,7 @@ export function useEscapeKey(callback: () => void, isActive: boolean = true) {
 }
 
 export function useScreenReaderAnnouncement() {
-  const announce = (message: string, priority: 'polite' | 'assertive' = 'polite') => {
+  const announce = (message: string, priority: "polite" | "assertive" = "polite") => {
     ScreenReader.announce(message, priority);
   };
 
@@ -417,7 +416,7 @@ export function useScreenReaderAnnouncement() {
 }
 
 export function useAriaAnnouncer() {
-  const announce = (message: string, priority: 'polite' | 'assertive' = 'polite') => {
+  const announce = (message: string, priority: "polite" | "assertive" = "polite") => {
     ScreenReader.announce(message, priority);
   };
 
@@ -437,14 +436,14 @@ export function useAriaAnnouncer() {
  */
 export class AccessibilityTesting {
   static checkAltText(): { missing: string[]; present: string[] } {
-    const images = document.querySelectorAll('img');
+    const images = document.querySelectorAll("img");
     const missing: string[] = [];
     const present: string[] = [];
 
-    images.forEach(img => {
-      const alt = img.getAttribute('alt');
-      const src = img.getAttribute('src') || '';
-      
+    images.forEach((img) => {
+      const alt = img.getAttribute("alt");
+      const src = img.getAttribute("src") || "";
+
       if (alt === null) {
         missing.push(src);
       } else {
@@ -456,21 +455,21 @@ export class AccessibilityTesting {
   }
 
   static checkHeadingStructure(): { valid: boolean; issues: string[] } {
-    const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
     const issues: string[] = [];
     let previousLevel = 0;
 
     headings.forEach((heading, index) => {
       const level = parseInt(heading.tagName.substring(1));
-      
+
       if (index === 0 && level !== 1) {
         issues.push(`First heading should be h1, found h${level}`);
       }
-      
+
       if (level > previousLevel + 1) {
         issues.push(`Heading level skipped: h${previousLevel} to h${level}`);
       }
-      
+
       previousLevel = level;
     });
 
@@ -484,7 +483,7 @@ export class AccessibilityTesting {
     const focusable = FocusManager.getFocusableElements(document.body);
     return {
       count: focusable.length,
-      elements: focusable.map(el => el.tagName.toLowerCase()),
+      elements: focusable.map((el) => el.tagName.toLowerCase()),
     };
   }
 
@@ -499,7 +498,7 @@ export class AccessibilityTesting {
 }
 
 // Initialize accessibility features
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   ScreenReader.initialize();
   SkipLinks.initializeSkipLinks();
   ReducedMotion.setupReducedMotion();

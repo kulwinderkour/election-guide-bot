@@ -4,15 +4,24 @@ import ReactMarkdown from "react-markdown";
 import { Send, Loader2, Sparkles, Bot, User as UserIcon } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { googleAnalytics } from "@/lib/google-services";
 
 export const Route = createFileRoute("/chat")({
   component: ChatPage,
   head: () => ({
     meta: [
       { title: "Chat — ElectionGuide Bot" },
-      { name: "description", content: "Have a conversation with an AI assistant about Indian elections, voter rights, and the 12 phases of polling." },
+      {
+        name: "description",
+        content:
+          "Have a conversation with an AI assistant about Indian elections, voter rights, and the 12 phases of polling.",
+      },
       { property: "og:title", content: "Chat with ElectionGuide Bot" },
-      { property: "og:description", content: "Ask anything about Indian elections — get instant, friendly, ECI-aligned answers." },
+      {
+        property: "og:description",
+        content:
+          "Ask anything about Indian elections — get instant, friendly, ECI-aligned answers.",
+      },
     ],
   }),
 });
@@ -28,7 +37,11 @@ const SUGGESTIONS = [
 
 function ChatPage() {
   const [messages, setMessages] = useState<Msg[]>([
-    { role: "assistant", content: "Namaste! 🙏 I'm **ElectionGuide Bot**. Ask me anything about Indian elections — voting steps, timelines, eligibility, or how the EVM works.\n\nTry one of the suggestions below to get started." },
+    {
+      role: "assistant",
+      content:
+        "Namaste! 🙏 I'm **ElectionGuide Bot**. Ask me anything about Indian elections — voting steps, timelines, eligibility, or how the EVM works.\n\nTry one of the suggestions below to get started.",
+    },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -47,6 +60,7 @@ function ChatPage() {
     setMessages(next);
     setInput("");
     setLoading(true);
+    googleAnalytics.trackChatInteraction(trimmed, "user_query");
 
     try {
       const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/election-chat`;
@@ -84,7 +98,10 @@ function ChatPage() {
           if (line.endsWith("\r")) line = line.slice(0, -1);
           if (!line.startsWith("data: ")) continue;
           const data = line.slice(6).trim();
-          if (data === "[DONE]") { done = true; break; }
+          if (data === "[DONE]") {
+            done = true;
+            break;
+          }
           try {
             const parsed = JSON.parse(data);
             const delta = parsed.choices?.[0]?.delta?.content as string | undefined;
@@ -104,7 +121,11 @@ function ChatPage() {
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong.");
-      setMessages((prev) => prev.filter((m, i) => !(i === prev.length - 1 && m.role === "assistant" && m.content === "")));
+      setMessages((prev) =>
+        prev.filter(
+          (m, i) => !(i === prev.length - 1 && m.role === "assistant" && m.content === ""),
+        ),
+      );
     } finally {
       setLoading(false);
     }
@@ -115,17 +136,32 @@ function ChatPage() {
       <Header />
       <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col px-4 py-6 sm:px-6">
         <div className="mb-4">
-          <h1 className="font-display text-2xl font-bold text-foreground sm:text-3xl">Chat with ElectionGuide</h1>
-          <p className="text-sm text-muted-foreground">Conversational, personalized, and grounded in ECI processes.</p>
+          <h1 className="font-display text-2xl font-bold text-foreground sm:text-3xl">
+            Chat with ElectionGuide
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Conversational, personalized, and grounded in ECI processes.
+          </p>
         </div>
 
-        <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto rounded-2xl border border-border bg-gradient-card p-4 shadow-soft sm:p-6" style={{ minHeight: "50vh", maxHeight: "65vh" }}>
+        <div
+          ref={scrollRef}
+          className="flex-1 space-y-4 overflow-y-auto rounded-2xl border border-border bg-gradient-card p-4 shadow-soft sm:p-6"
+          style={{ minHeight: "50vh", maxHeight: "65vh" }}
+        >
           {messages.map((m, i) => (
-            <div key={i} className={`flex gap-3 animate-fade-up ${m.role === "user" ? "flex-row-reverse" : ""}`}>
-              <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${m.role === "user" ? "bg-saffron text-saffron-foreground" : "bg-gradient-hero text-primary-foreground"}`}>
+            <div
+              key={i}
+              className={`flex gap-3 animate-fade-up ${m.role === "user" ? "flex-row-reverse" : ""}`}
+            >
+              <div
+                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${m.role === "user" ? "bg-saffron text-saffron-foreground" : "bg-gradient-hero text-primary-foreground"}`}
+              >
                 {m.role === "user" ? <UserIcon className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
               </div>
-              <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${m.role === "user" ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>
+              <div
+                className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${m.role === "user" ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}
+              >
                 <div className="prose prose-sm max-w-none [&_p]:my-1 [&_ul]:my-1.5 [&_ol]:my-1.5 [&_strong]:font-semibold [&_a]:text-primary [&_a]:underline">
                   <ReactMarkdown>{m.content || "…"}</ReactMarkdown>
                 </div>
@@ -140,7 +176,9 @@ function ChatPage() {
         </div>
 
         {error && (
-          <div className="mt-3 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive">{error}</div>
+          <div className="mt-3 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive">
+            {error}
+          </div>
         )}
 
         {messages.length <= 1 && (
@@ -158,7 +196,10 @@ function ChatPage() {
         )}
 
         <form
-          onSubmit={(e) => { e.preventDefault(); send(input); }}
+          onSubmit={(e) => {
+            e.preventDefault();
+            send(input);
+          }}
           className="mt-4 flex gap-2"
         >
           <input

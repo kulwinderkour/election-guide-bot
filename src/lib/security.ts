@@ -3,20 +3,20 @@
  * Implements safe coding practices and security measures
  */
 
-import { sanitizeInput } from './utils';
+import { sanitizeInput } from "./utils";
 
 // Content Security Policy
 export const CSP_CONFIG = {
-  'default-src': ["'self'"],
-  'script-src': ["'self'", "'unsafe-inline'", "https://apis.google.com"],
-  'style-src': ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-  'font-src': ["'self'", "https://fonts.gstatic.com"],
-  'img-src': ["'self'", "data:", "https:", "blob:"],
-  'connect-src': ["'self'", "https://api.supabase.co", "https://generativelanguage.googleapis.com"],
-  'frame-src': ["'none'"],
-  'object-src': ["'none'"],
-  'base-uri': ["'self'"],
-  'form-action': ["'self'"],
+  "default-src": ["'self'"],
+  "script-src": ["'self'", "'unsafe-inline'", "https://apis.google.com"],
+  "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+  "font-src": ["'self'", "https://fonts.gstatic.com"],
+  "img-src": ["'self'", "data:", "https:", "blob:"],
+  "connect-src": ["'self'", "https://api.supabase.co", "https://generativelanguage.googleapis.com"],
+  "frame-src": ["'none'"],
+  "object-src": ["'none'"],
+  "base-uri": ["'self'"],
+  "form-action": ["'self'"],
 };
 
 /**
@@ -24,8 +24,8 @@ export const CSP_CONFIG = {
  */
 export function generateCSP(): string {
   return Object.entries(CSP_CONFIG)
-    .map(([key, values]) => `${key} ${values.join(' ')}`)
-    .join('; ');
+    .map(([key, values]) => `${key} ${values.join(" ")}`)
+    .join("; ");
 }
 
 /**
@@ -48,14 +48,14 @@ export class RateLimiter {
   isAllowed(identifier: string): boolean {
     const now = Date.now();
     const requests = this.requests.get(identifier) || [];
-    
+
     // Remove old requests outside the window
-    const validRequests = requests.filter(time => now - time < this.config.windowMs);
-    
+    const validRequests = requests.filter((time) => now - time < this.config.windowMs);
+
     if (validRequests.length >= this.config.max) {
       return false;
     }
-    
+
     validRequests.push(now);
     this.requests.set(identifier, validRequests);
     return true;
@@ -85,7 +85,7 @@ export class InputValidator {
   }
 
   static validatePhone(phone: string): boolean {
-    const cleanPhone = phone.replace(/\D/g, '');
+    const cleanPhone = phone.replace(/\D/g, "");
     return /^[6-9]\d{9}$/.test(cleanPhone);
   }
 
@@ -96,12 +96,36 @@ export class InputValidator {
 
   static validateState(state: string): boolean {
     const validStates = [
-      'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
-      'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand',
-      'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur',
-      'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab',
-      'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura',
-      'Uttar Pradesh', 'Uttarakhand', 'West Bengal', 'Delhi', 'Puducherry'
+      "Andhra Pradesh",
+      "Arunachal Pradesh",
+      "Assam",
+      "Bihar",
+      "Chhattisgarh",
+      "Goa",
+      "Gujarat",
+      "Haryana",
+      "Himachal Pradesh",
+      "Jharkhand",
+      "Karnataka",
+      "Kerala",
+      "Madhya Pradesh",
+      "Maharashtra",
+      "Manipur",
+      "Meghalaya",
+      "Mizoram",
+      "Nagaland",
+      "Odisha",
+      "Punjab",
+      "Rajasthan",
+      "Sikkim",
+      "Tamil Nadu",
+      "Telangana",
+      "Tripura",
+      "Uttar Pradesh",
+      "Uttarakhand",
+      "West Bengal",
+      "Delhi",
+      "Puducherry",
     ];
     return validStates.includes(state.trim());
   }
@@ -113,15 +137,15 @@ export class InputValidator {
 export class XSSProtection {
   static escapeHtml(unsafe: string): string {
     return unsafe
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
   }
 
   static sanitizeHtml(dirty: string): string {
-    const div = document.createElement('div');
+    const div = document.createElement("div");
     div.textContent = dirty;
     return div.innerHTML;
   }
@@ -129,7 +153,7 @@ export class XSSProtection {
   static validateUrl(url: string): boolean {
     try {
       const urlObj = new URL(url);
-      return ['http:', 'https:'].includes(urlObj.protocol);
+      return ["http:", "https:"].includes(urlObj.protocol);
     } catch {
       return false;
     }
@@ -141,12 +165,12 @@ export class XSSProtection {
  */
 export class CSRFProtection {
   private static readonly TOKEN_LENGTH = 32;
-  private static readonly STORAGE_KEY = 'csrf-token';
+  private static readonly STORAGE_KEY = "csrf-token";
 
   static generateToken(): string {
     const array = new Uint8Array(this.TOKEN_LENGTH);
     crypto.getRandomValues(array);
-    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+    return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join("");
   }
 
   static getToken(): string {
@@ -188,11 +212,11 @@ export class APISecurity {
     const secureOptions: RequestInit = {
       ...options,
       headers: {
-        'Content-Security-Policy': generateCSP(),
-        'X-Content-Type-Options': 'nosniff',
-        'X-Frame-Options': 'DENY',
-        'X-XSS-Protection': '1; mode=block',
-        'Referrer-Policy': 'strict-origin-when-cross-origin',
+        "Content-Security-Policy": generateCSP(),
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-XSS-Protection": "1; mode=block",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
         ...options.headers,
       },
     };
@@ -201,7 +225,7 @@ export class APISecurity {
   }
 
   static validateApiResponse(response: Response): boolean {
-    return response.ok && response.headers.get('content-type')?.includes('application/json');
+    return response.ok && response.headers.get("content-type")?.includes("application/json");
   }
 }
 
@@ -219,7 +243,7 @@ export class AuthSecurity {
 
   static hashPassword(password: string): string {
     // In a real app, use bcrypt or similar
-    return btoa(password + 'salt'); // Simple hashing for demo
+    return btoa(password + "salt"); // Simple hashing for demo
   }
 
   static validatePassword(password: string): boolean {
@@ -241,25 +265,24 @@ export class DataEncryption {
     try {
       const encoder = new TextEncoder();
       const dataUint8Array = encoder.encode(data);
-      const key = await crypto.subtle.generateKey(
-        { name: 'AES-GCM', length: 256 },
-        true,
-        ['encrypt', 'decrypt']
-      );
+      const key = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, [
+        "encrypt",
+        "decrypt",
+      ]);
       const iv = crypto.getRandomValues(new Uint8Array(12));
       const encryptedData = await crypto.subtle.encrypt(
-        { name: 'AES-GCM', iv },
+        { name: "AES-GCM", iv },
         key,
-        dataUint8Array
+        dataUint8Array,
       );
-      
+
       const result = new Uint8Array(iv.length + encryptedData.byteLength);
       result.set(iv);
       result.set(new Uint8Array(encryptedData), iv.length);
-      
+
       return btoa(String.fromCharCode(...result));
     } catch (error) {
-      console.error('Encryption failed:', error);
+      console.error("Encryption failed:", error);
       return data; // Fallback to plain text
     }
   }
@@ -271,15 +294,15 @@ export class DataEncryption {
       for (let i = 0; i < data.length; i++) {
         uint8Array[i] = data.charCodeAt(i);
       }
-      
+
       const iv = uint8Array.slice(0, 12);
       const dataUint8Array = uint8Array.slice(12);
-      
+
       // In a real app, you'd need to store and retrieve the key
       // This is a simplified version for demo purposes
       return new TextDecoder().decode(dataUint8Array);
     } catch (error) {
-      console.error('Decryption failed:', error);
+      console.error("Decryption failed:", error);
       return encryptedData; // Fallback to original data
     }
   }
@@ -291,28 +314,28 @@ export class DataEncryption {
 export class SecurityMiddleware {
   static validateRequest(request: Request): { valid: boolean; errors: string[] } {
     const errors: string[] = [];
-    
+
     // Check Content-Type
-    const contentType = request.headers.get('content-type');
-    if (request.method !== 'GET' && !contentType?.includes('application/json')) {
-      errors.push('Invalid content type');
+    const contentType = request.headers.get("content-type");
+    if (request.method !== "GET" && !contentType?.includes("application/json")) {
+      errors.push("Invalid content type");
     }
-    
+
     // Check CSRF token for state-changing requests
-    if (['POST', 'PUT', 'DELETE'].includes(request.method)) {
-      const csrfToken = request.headers.get('X-CSRF-Token');
+    if (["POST", "PUT", "DELETE"].includes(request.method)) {
+      const csrfToken = request.headers.get("X-CSRF-Token");
       if (!csrfToken || !CSRFProtection.validateToken(csrfToken)) {
-        errors.push('Invalid CSRF token');
+        errors.push("Invalid CSRF token");
       }
     }
-    
+
     // Check rate limiting
-    const clientIP = request.headers.get('X-Forwarded-For') || 'unknown';
-    const rateLimiter = APISecurity.getRateLimiter('API_REQUESTS');
+    const clientIP = request.headers.get("X-Forwarded-For") || "unknown";
+    const rateLimiter = APISecurity.getRateLimiter("API_REQUESTS");
     if (!rateLimiter.isAllowed(clientIP)) {
-      errors.push('Rate limit exceeded');
+      errors.push("Rate limit exceeded");
     }
-    
+
     return {
       valid: errors.length === 0,
       errors,
@@ -321,21 +344,21 @@ export class SecurityMiddleware {
 
   static sanitizeInput(data: Record<string, any>): Record<string, any> {
     const sanitized: Record<string, any> = {};
-    
+
     for (const [key, value] of Object.entries(data)) {
-      if (typeof value === 'string') {
+      if (typeof value === "string") {
         sanitized[key] = sanitizeInput(value);
       } else if (Array.isArray(value)) {
-        sanitized[key] = value.map(item => 
-          typeof item === 'string' ? sanitizeInput(item) : item
+        sanitized[key] = value.map((item) =>
+          typeof item === "string" ? sanitizeInput(item) : item,
         );
-      } else if (typeof value === 'object' && value !== null) {
+      } else if (typeof value === "object" && value !== null) {
         sanitized[key] = this.sanitizeInput(value);
       } else {
         sanitized[key] = value;
       }
     }
-    
+
     return sanitized;
   }
 }
@@ -348,13 +371,13 @@ export class SecurityMonitor {
     timestamp: Date;
     event: string;
     details: any;
-    severity: 'low' | 'medium' | 'high' | 'critical';
+    severity: "low" | "medium" | "high" | "critical";
   }> = [];
 
   static logSecurityEvent(
     event: string,
     details: any,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium'
+    severity: "low" | "medium" | "high" | "critical" = "medium",
   ): void {
     this.logs.push({
       timestamp: new Date(),
@@ -369,8 +392,8 @@ export class SecurityMonitor {
     }
 
     // In production, send to security monitoring service
-    if (severity === 'high' || severity === 'critical') {
-      console.warn('Security Event:', { event, details, severity });
+    if (severity === "high" || severity === "critical") {
+      console.warn("Security Event:", { event, details, severity });
     }
   }
 
@@ -380,11 +403,9 @@ export class SecurityMonitor {
 
   static detectSuspiciousActivity(patterns: string[]): boolean {
     const recentLogs = this.logs.filter(
-      log => Date.now() - log.timestamp.getTime() < 300000 // Last 5 minutes
+      (log) => Date.now() - log.timestamp.getTime() < 300000, // Last 5 minutes
     );
 
-    return patterns.some(pattern =>
-      recentLogs.some(log => log.event.includes(pattern))
-    );
+    return patterns.some((pattern) => recentLogs.some((log) => log.event.includes(pattern)));
   }
 }

@@ -1,5 +1,5 @@
-import '@testing-library/jest-dom';
-import { vi } from 'vitest';
+import "@testing-library/jest-dom";
+import { vi } from "vitest";
 
 // Mock IntersectionObserver
 global.IntersectionObserver = vi.fn().mockImplementation(() => ({
@@ -16,9 +16,9 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
 }));
 
 // Mock matchMedia
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
-  value: vi.fn().mockImplementation(query => ({
+  value: vi.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
@@ -37,7 +37,7 @@ const localStorageMock = {
   removeItem: vi.fn(),
   clear: vi.fn(),
 };
-Object.defineProperty(window, 'localStorage', {
+Object.defineProperty(window, "localStorage", {
   value: localStorageMock,
 });
 
@@ -48,16 +48,16 @@ const sessionStorageMock = {
   removeItem: vi.fn(),
   clear: vi.fn(),
 };
-Object.defineProperty(window, 'sessionStorage', {
+Object.defineProperty(window, "sessionStorage", {
   value: sessionStorageMock,
 });
 
 // Mock crypto
-Object.defineProperty(global, 'crypto', {
+Object.defineProperty(global, "crypto", {
   value: {
-    getRandomValues: vi.fn().mockImplementation(arr => 
-      Array.from(arr, () => Math.floor(Math.random() * 256))
-    ),
+    getRandomValues: vi
+      .fn()
+      .mockImplementation((arr) => Array.from(arr, () => Math.floor(Math.random() * 256))),
     subtle: {
       generateKey: vi.fn().mockResolvedValue({}),
       encrypt: vi.fn().mockResolvedValue(new ArrayBuffer(8)),
@@ -73,21 +73,21 @@ global.fetch = vi.fn();
 global.Image = vi.fn().mockImplementation(() => ({
   onload: null,
   onerror: null,
-  src: '',
+  src: "",
   complete: false,
   naturalWidth: 0,
   naturalHeight: 0,
-})) as any;
+})) as unknown as typeof Image;
 
 // Mock performance
-Object.defineProperty(window, 'performance', {
+Object.defineProperty(window, "performance", {
   value: {
     getEntriesByType: vi.fn(() => []),
     now: vi.fn(() => Date.now()),
     mark: vi.fn(),
     measure: vi.fn(),
     navigation: {
-      type: 'navigate',
+      type: "navigate",
       redirectCount: 0,
     },
     memory: {
@@ -99,15 +99,15 @@ Object.defineProperty(window, 'performance', {
 });
 
 // Mock navigator
-Object.defineProperty(window, 'navigator', {
+Object.defineProperty(window, "navigator", {
   value: {
-    userAgent: 'test-user-agent',
-    language: 'en-US',
-    languages: ['en-US', 'en'],
+    userAgent: "test-user-agent",
+    language: "en-US",
+    languages: ["en-US", "en"],
     onLine: true,
     clipboard: {
       writeText: vi.fn().mockResolvedValue(undefined),
-      readText: vi.fn().mockResolvedValue(''),
+      readText: vi.fn().mockResolvedValue(""),
     },
   },
 });
@@ -116,14 +116,14 @@ Object.defineProperty(window, 'navigator', {
 global.URL = class URL {
   constructor(href: string, base?: string) {
     this.href = href;
-    this.origin = 'http://localhost';
-    this.protocol = 'http:';
-    this.host = 'localhost';
-    this.hostname = 'localhost';
-    this.port = '';
-    this.pathname = '/';
-    this.search = '';
-    this.hash = '';
+    this.origin = "http://localhost";
+    this.protocol = "http:";
+    this.host = "localhost";
+    this.hostname = "localhost";
+    this.port = "";
+    this.pathname = "/";
+    this.search = "";
+    this.hash = "";
   }
   href: string;
   origin: string;
@@ -134,21 +134,23 @@ global.URL = class URL {
   pathname: string;
   search: string;
   hash: string;
-  toString() { return this.href; }
-} as any;
+  toString() {
+    return this.href;
+  }
+} as unknown as typeof URL;
 
 // Mock TextEncoder/TextDecoder
 global.TextEncoder = class TextEncoder {
   encode(input: string): Uint8Array {
-    return new Uint8Array(input.split('').map(char => char.charCodeAt(0)));
+    return new Uint8Array(input.split("").map((char) => char.charCodeAt(0)));
   }
-} as any;
+} as unknown as typeof TextEncoder;
 
 global.TextDecoder = class TextDecoder {
   decode(input: Uint8Array): string {
     return String.fromCharCode(...input);
   }
-} as any;
+} as unknown as typeof TextDecoder;
 
 // Mock requestAnimationFrame
 global.requestAnimationFrame = vi.fn((cb) => setTimeout(cb, 16));

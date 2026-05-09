@@ -1,4 +1,6 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { googleServices } from "@/lib/google-services";
 import appCss from "../styles.css?url";
 import FloatingRobot from "@/components/FloatingRobot";
 
@@ -8,9 +10,14 @@ function NotFoundComponent() {
       <div className="max-w-md text-center">
         <h1 className="font-display text-7xl font-bold text-foreground">404</h1>
         <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">That page hasn't been declared on the ballot.</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          That page hasn't been declared on the ballot.
+        </p>
         <div className="mt-6">
-          <Link to="/" className="inline-flex items-center justify-center rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90">
+          <Link
+            to="/"
+            className="inline-flex items-center justify-center rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+          >
             Back to homepage
           </Link>
         </div>
@@ -25,18 +32,32 @@ export const Route = createRootRoute({
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "ElectionGuide Bot — Get the basics of Indian elections in 5 minutes, no stress" },
-      { name: "description", content: "Interactive AI assistant explaining Indian election processes, timelines, eligibility, and more — chat, timeline, and quiz in one place." },
+      {
+        name: "description",
+        content:
+          "Interactive AI assistant explaining Indian election processes, timelines, eligibility, and more — chat, timeline, and quiz in one place.",
+      },
       { name: "author", content: "ElectionGuide" },
-      { property: "og:title", content: "ElectionGuide Bot — Get the basics of Indian elections in 5 minutes, no stress" },
-      { property: "og:description", content: "Chat, timeline, eligibility checker, and quiz — your friendly guide to ECI election processes." },
+      {
+        property: "og:title",
+        content: "ElectionGuide Bot — Get the basics of Indian elections in 5 minutes, no stress",
+      },
+      {
+        property: "og:description",
+        content:
+          "Chat, timeline, eligibility checker, and quiz — your friendly guide to ECI election processes.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" },
-      { rel: "stylesheet", href: appCss }
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap",
+      },
+      { rel: "stylesheet", href: appCss },
     ],
   }),
   shellComponent: RootShell,
@@ -45,9 +66,22 @@ export const Route = createRootRoute({
 });
 
 function RootShell({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    const initServices = async () => {
+      try {
+        await googleServices.initializeAll();
+      } catch (error) {
+        console.error("Google Services initialization failed:", error);
+      }
+    };
+    initServices();
+  }, []);
+
   return (
     <html lang="en">
-      <head><HeadContent /></head>
+      <head>
+        <HeadContent />
+      </head>
       <body>
         {children}
         <FloatingRobot />

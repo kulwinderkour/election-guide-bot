@@ -18,8 +18,8 @@ export interface User {
 }
 
 export interface UserPreferences {
-  language: 'en' | 'hi' | 'bn' | 'te' | 'ta' | 'mr' | 'gu' | 'kn' | 'ml' | 'pa' | 'or' | 'as';
-  theme: 'light' | 'dark' | 'system';
+  language: "en" | "hi" | "bn" | "te" | "ta" | "mr" | "gu" | "kn" | "ml" | "pa" | "or" | "as";
+  theme: "light" | "dark" | "system";
   notifications: NotificationSettings;
 }
 
@@ -39,7 +39,7 @@ export interface ElectionPhase {
   endDate?: Date;
   duration: string;
   requirements: string[];
-  importance: 'low' | 'medium' | 'high' | 'critical';
+  importance: "low" | "medium" | "high" | "critical";
   resources: Resource[];
 }
 
@@ -48,7 +48,7 @@ export interface Resource {
   title: string;
   description: string;
   url: string;
-  type: 'article' | 'video' | 'pdf' | 'tool' | 'form';
+  type: "article" | "video" | "pdf" | "tool" | "form";
   language: string;
   verified: boolean;
 }
@@ -56,7 +56,7 @@ export interface Resource {
 export interface ElectionTimeline {
   id: string;
   year: number;
-  type: 'lok_sabha' | 'rajya_sabha' | 'vidhan_sabha' | 'panchayat';
+  type: "lok_sabha" | "rajya_sabha" | "vidhan_sabha" | "panchayat";
   phases: ElectionPhase[];
   currentPhase?: number;
   keyDates: KeyDate[];
@@ -67,14 +67,14 @@ export interface KeyDate {
   title: string;
   date: Date;
   description: string;
-  importance: 'low' | 'medium' | 'high' | 'critical';
+  importance: "low" | "medium" | "high" | "critical";
   actionRequired: boolean;
 }
 
 // Chat and AI Types
 export interface ChatMessage {
   id: string;
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
   timestamp: Date;
   metadata?: MessageMetadata;
@@ -83,7 +83,7 @@ export interface ChatMessage {
 export interface MessageMetadata {
   intent?: string;
   entities?: Entity[];
-  sentiment?: 'positive' | 'negative' | 'neutral';
+  sentiment?: "positive" | "negative" | "neutral";
   confidence?: number;
   suggestedActions?: SuggestedAction[];
 }
@@ -97,7 +97,7 @@ export interface Entity {
 }
 
 export interface SuggestedAction {
-  type: 'quiz' | 'timeline' | 'eligibility' | 'resource' | 'form';
+  type: "quiz" | "timeline" | "eligibility" | "resource" | "form";
   title: string;
   description: string;
   url?: string;
@@ -116,9 +116,9 @@ export interface ConversationContext {
   userState: string;
   currentTopic?: string;
   previousQuestions: string[];
-  userLevel: 'beginner' | 'intermediate' | 'advanced';
+  userLevel: "beginner" | "intermediate" | "advanced";
   location?: string;
-  voterStatus?: 'eligible' | 'ineligible' | 'registered' | 'unknown';
+  voterStatus?: "eligible" | "ineligible" | "registered" | "unknown";
 }
 
 // Quiz Types
@@ -128,7 +128,7 @@ export interface QuizQuestion {
   options: QuizOption[];
   correctAnswer: number;
   explanation: string;
-  difficulty: 'easy' | 'medium' | 'hard';
+  difficulty: "easy" | "medium" | "hard";
   category: QuizCategory;
   references?: string[];
 }
@@ -184,7 +184,7 @@ export interface Form {
   name: string;
   description: string;
   url: string;
-  type: 'registration' | 'correction' | 'transfer' | 'objection';
+  type: "registration" | "correction" | "transfer" | "objection";
   deadline?: Date;
   requiredDocuments: string[];
   process: string[];
@@ -257,8 +257,8 @@ export interface GeminiUsage {
 export interface BaseComponentProps {
   className?: string;
   children?: React.ReactNode;
-  'aria-label'?: string;
-  'data-testid'?: string;
+  "aria-label"?: string;
+  "data-testid"?: string;
 }
 
 export interface LoadingState {
