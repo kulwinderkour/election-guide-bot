@@ -342,8 +342,8 @@ export class LazyLoader {
   static initialize(): void {
     if ("IntersectionObserver" in window) {
       this.observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
+        (entries: IntersectionObserverEntry[]) => {
+          entries.forEach((entry: IntersectionObserverEntry) => {
             if (entry.isIntersecting) {
               this.loadElement(entry.target as HTMLElement);
               this.observer.unobserve(entry.target);
