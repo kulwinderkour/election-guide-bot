@@ -1,6 +1,7 @@
 /**
  * Performance optimization utilities for the Election Guide Bot
  * Implements efficient resource usage and performance monitoring
+ * This file contains various classes for monitoring and optimizing app performance.
  */
 
 import { debounce, throttle } from "./utils";
