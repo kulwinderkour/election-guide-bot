@@ -1,3 +1,7 @@
+/**
+ * Footer component for the Election Guide Bot
+ * Displays credits and official links
+ */
 export function Footer() {
   return (
     <footer className="mt-20 border-t border-border/60 bg-secondary/40">
