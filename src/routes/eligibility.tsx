@@ -1,3 +1,4 @@
+// Eligibility route for the Election Guide Bot
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import {

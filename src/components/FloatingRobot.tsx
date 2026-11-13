@@ -1,3 +1,4 @@
+// FloatingRobot component - AI assistant floating action button
 import { Link } from "@tanstack/react-router";
 import { MessageCircle, Sparkles } from "lucide-react";
 

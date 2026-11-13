@@ -1,3 +1,6 @@
+/**
+ * Election Guide Bot Utilities
+ */
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { type ClassValue, type ErrorMessage } from "@/lib/types";
